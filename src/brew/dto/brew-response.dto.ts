@@ -19,7 +19,8 @@ export class BrewResponseDto {
    * @type {string}
    */
   @ApiProperty({
-    example: 'I am a teapot. Coffee brewing requests are met with categorical rejection.',
+    example:
+      'I am a teapot. Coffee brewing requests are met with categorical rejection.',
     description: 'The refusal reason',
   })
   public message!: string;

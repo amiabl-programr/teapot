@@ -11,7 +11,8 @@ export class TeapotException extends HttpException {
     super(
       {
         status: 'refused',
-        message: 'I am a teapot. Coffee brewing requests are met with categorical rejection.',
+        message:
+          'I am a teapot. Coffee brewing requests are met with categorical rejection.',
         teaRequested,
         brewed: false,
         timestamp: new Date().toISOString(),
