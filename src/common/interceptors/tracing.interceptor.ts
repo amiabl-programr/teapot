@@ -1,4 +1,9 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { trace } from '@opentelemetry/api';
@@ -20,22 +25,22 @@ export class TracingInterceptor implements NestInterceptor {
     const tracer = trace.getTracer('teapot-tracer');
 
     const requestSpan = tracer.startSpan('http.server.request');
-    
+
     const validateSpan = tracer.startSpan('teapot.validate_input');
     validateSpan.end();
-    
+
     const waterSpan = tracer.startSpan('teapot.check_water');
     waterSpan.setAttribute('water_level', 'empty');
     waterSpan.end();
-    
+
     const tempSpan = tracer.startSpan('teapot.check_temperature');
     tempSpan.setAttribute('temperature', 'cold');
     tempSpan.end();
-    
+
     const brewSpan = tracer.startSpan('teapot.attempt_brew');
     brewSpan.setAttribute('brew_success', false);
     brewSpan.end();
-    
+
     const refusalSpan = tracer.startSpan('teapot.generate_refusal');
     refusalSpan.setAttribute('status', 'success - refusal sent');
     refusalSpan.end();

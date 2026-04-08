@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request } from 'express';
 
 /**
@@ -24,7 +29,9 @@ export class TeapotKeyGuard implements CanActivate {
     const apiKey = request.header('X-Teapot-Key');
 
     if (!apiKey || !this.validKeys.includes(apiKey)) {
-      throw new UnauthorizedException('Invalid or missing X-Teapot-Key header.');
+      throw new UnauthorizedException(
+        'Invalid or missing X-Teapot-Key header.',
+      );
     }
 
     return true;

@@ -1,4 +1,9 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import * as crypto from 'crypto';
@@ -29,7 +34,8 @@ export class LoggingInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest<Request>();
     const startTime = Date.now();
     const requestId = crypto.randomUUID();
-    const traceId = (request.headers['x-trace-id'] as string) || crypto.randomUUID();
+    const traceId =
+      (request.headers['x-trace-id'] as string) || crypto.randomUUID();
 
     return next.handle().pipe(
       tap({
@@ -38,16 +44,22 @@ export class LoggingInterceptor implements NestInterceptor {
         },
         next: () => {
           this.log(request, startTime, requestId, traceId, 'refused');
-        }
+        },
       }),
     );
   }
 
-  private log(request: Request, startTime: number, requestId: string, traceId: string, outcome: string) {
+  private log(
+    request: Request,
+    startTime: number,
+    requestId: string,
+    traceId: string,
+    outcome: string,
+  ) {
     const durationMs = Date.now() - startTime;
-    const body = request.body as any;
+    const body = request.body;
     const isCoffee = request.path.includes('coffee');
-    
+
     const logData = {
       requestId,
       timestamp: new Date().toISOString(),

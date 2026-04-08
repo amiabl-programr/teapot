@@ -1,5 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber, IsOptional, Max, Min, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Max,
+  Min,
+  IsBoolean,
+} from 'class-validator';
 
 /**
  * Data transfer object representing a brewing request.
@@ -21,7 +29,10 @@ export class BrewRequestDto {
    * The requested temperature in Celsius.
    * @type {number}
    */
-  @ApiPropertyOptional({ description: 'The requested temperature in Celsius', example: 95 })
+  @ApiPropertyOptional({
+    description: 'The requested temperature in Celsius',
+    example: 95,
+  })
   @IsNumber()
   @IsOptional()
   public temperature?: number;
@@ -30,7 +41,12 @@ export class BrewRequestDto {
    * The requested sugar level (0-10).
    * @type {number}
    */
-  @ApiPropertyOptional({ description: 'The requested sugar level (0-10)', minimum: 0, maximum: 10, example: 2 })
+  @ApiPropertyOptional({
+    description: 'The requested sugar level (0-10)',
+    minimum: 0,
+    maximum: 10,
+    example: 2,
+  })
   @IsNumber()
   @Min(0)
   @Max(10)
@@ -41,7 +57,10 @@ export class BrewRequestDto {
    * Whether milk is requested.
    * @type {boolean}
    */
-  @ApiPropertyOptional({ description: 'Whether milk is requested', example: true })
+  @ApiPropertyOptional({
+    description: 'Whether milk is requested',
+    example: true,
+  })
   @IsBoolean()
   @IsOptional()
   public milk?: boolean;

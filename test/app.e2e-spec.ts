@@ -12,7 +12,13 @@ describe('Teapot Microservice (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
     await app.init();
   });
 
@@ -51,19 +57,19 @@ describe('Teapot Microservice (e2e)', () => {
     const res = await request(app.getHttpServer())
       .get('/metrics')
       .expect(HttpStatus.OK);
-    
+
     expect(res.text).toContain('teapot_temperature_celsius 18');
   });
 
   it('POST /v1/brew triggers rate limit after 3 requests', async () => {
     // Already did 1 above, let's do 3 more to ensure hitting the 3/min limit
     for (let i = 0; i < 3; i++) {
-        await request(app.getHttpServer())
-            .post('/v1/brew')
-            .set('X-Teapot-Key', 'admin')
-            .send({ teaType: 'Matcha' });
+      await request(app.getHttpServer())
+        .post('/v1/brew')
+        .set('X-Teapot-Key', 'admin')
+        .send({ teaType: 'Matcha' });
     }
-    
+
     // The 4th/5th overall should be 429 Too Many Requests
     return request(app.getHttpServer())
       .post('/v1/brew')
@@ -71,7 +77,9 @@ describe('Teapot Microservice (e2e)', () => {
       .send({ teaType: 'Matcha' })
       .expect(HttpStatus.TOO_MANY_REQUESTS)
       .expect((res) => {
-         expect(res.body.message).toContain('The kettle needs time to cool down.');
+        expect(res.body.message).toContain(
+          'The kettle needs time to cool down.',
+        );
       });
   });
 });

@@ -1,4 +1,13 @@
-import { Controller, Post, Get, Body, HttpCode, HttpStatus, UseGuards, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  HttpException,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiHeader } from '@nestjs/swagger';
 import { BrewService } from './brew.service';
 import { BrewRequestDto } from './dto/brew-request.dto';
@@ -14,7 +23,12 @@ import { MetricsService } from '../metrics/metrics.service';
  */
 @ApiTags('brew')
 @UseGuards(TeapotKeyGuard)
-@ApiHeader({ name: 'X-Teapot-Key', description: 'Authentication key to receive your refusal. Valid keys: guest, admin, teamaster', required: true })
+@ApiHeader({
+  name: 'X-Teapot-Key',
+  description:
+    'Authentication key to receive your refusal. Valid keys: guest, admin, teamaster',
+  required: true,
+})
 @Controller()
 export class BrewController {
   /**
@@ -37,7 +51,11 @@ export class BrewController {
   @Post('v1/brew')
   @HttpCode(HttpStatus.I_AM_A_TEAPOT)
   @ApiOperation({ summary: 'Attempt to brew tea (will always fail)' })
-  @ApiResponse({ status: 418, description: 'The only possible outcome', type: BrewResponseDto })
+  @ApiResponse({
+    status: 418,
+    description: 'The only possible outcome',
+    type: BrewResponseDto,
+  })
   public brewTea(@Body() brewRequest: BrewRequestDto): BrewResponseDto {
     return this.brewService.brew(brewRequest);
   }
@@ -52,7 +70,10 @@ export class BrewController {
   @ApiOperation({ summary: 'Attempt to brew tea via V2 (deprecated)' })
   @ApiResponse({ status: 410, description: 'Endpoint is gone' })
   public brewTeaV2(): never {
-    throw new HttpException('This version was sunset in Q3. Please migrate to v1.', HttpStatus.GONE);
+    throw new HttpException(
+      'This version was sunset in Q3. Please migrate to v1.',
+      HttpStatus.GONE,
+    );
   }
 
   /**
@@ -66,6 +87,9 @@ export class BrewController {
   @ApiResponse({ status: 418, description: 'Absolutely not' })
   public brewCoffee(): never {
     this.metricsService.coffeeRequestsTotal.inc();
-    throw new HttpException({ message: 'Absolutely not. I am a teapot.' }, HttpStatus.I_AM_A_TEAPOT);
+    throw new HttpException(
+      { message: 'Absolutely not. I am a teapot.' },
+      HttpStatus.I_AM_A_TEAPOT,
+    );
   }
 }

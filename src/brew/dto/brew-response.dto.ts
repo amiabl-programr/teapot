@@ -18,7 +18,10 @@ export class BrewResponseDto {
    * The refusal message.
    * @type {string}
    */
-  @ApiProperty({ example: 'I am a teapot. I cannot brew coffee or anything else.', description: 'The refusal reason' })
+  @ApiProperty({
+    example: 'I am a teapot. I cannot brew coffee or anything else.',
+    description: 'The refusal reason',
+  })
   public message!: string;
 
   /**

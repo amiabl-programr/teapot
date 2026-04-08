@@ -4,6 +4,6 @@ import { BrewService } from './brew.service';
 
 @Module({
   controllers: [BrewController],
-  providers: [BrewService]
+  providers: [BrewService],
 })
 export class BrewModule {}
