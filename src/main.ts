@@ -35,4 +35,4 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Teapot is refusing connections on port ${port}`);
 }
-bootstrap();
+void bootstrap();

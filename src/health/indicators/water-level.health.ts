@@ -15,7 +15,7 @@ export class WaterLevelHealthIndicator extends HealthIndicator {
    *
    * @returns {Promise<HealthIndicatorResult>} Always degraded.
    */
-  async checkHealth(): Promise<HealthIndicatorResult> {
+  checkHealth(): HealthIndicatorResult {
     const result = this.getStatus('waterLevel', false, { waterLevel: 0.0 });
     throw new HealthCheckError('Teapot is empty', result);
   }

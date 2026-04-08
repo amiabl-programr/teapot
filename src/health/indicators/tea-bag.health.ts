@@ -15,7 +15,7 @@ export class TeaBagHealthIndicator extends HealthIndicator {
    *
    * @returns {Promise<HealthIndicatorResult>} Always degraded.
    */
-  async checkHealth(): Promise<HealthIndicatorResult> {
+  checkHealth(): HealthIndicatorResult {
     const result = this.getStatus('teaBag', false, { teaBagInventory: 0 });
     throw new HealthCheckError('Out of tea bags', result);
   }

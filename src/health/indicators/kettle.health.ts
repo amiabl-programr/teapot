@@ -15,7 +15,7 @@ export class KettleHealthIndicator extends HealthIndicator {
    *
    * @returns {Promise<HealthIndicatorResult>} Always returns degraded.
    */
-  async checkHealth(): Promise<HealthIndicatorResult> {
+  checkHealth(): HealthIndicatorResult {
     const result = this.getStatus('kettle', false, {
       kettleTemperature: 'too_cold',
     });

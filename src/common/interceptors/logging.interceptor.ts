@@ -30,7 +30,7 @@ export class LoggingInterceptor implements NestInterceptor {
    * @param {CallHandler} next The next call handler
    * @returns {Observable<any>} The response stream
    */
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<Request>();
     const startTime = Date.now();
     const requestId = crypto.randomUUID();
@@ -39,7 +39,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap({
-        error: (err) => {
+        error: () => {
           this.log(request, startTime, requestId, traceId, 'refused');
         },
         next: () => {
@@ -57,7 +57,7 @@ export class LoggingInterceptor implements NestInterceptor {
     outcome: string,
   ) {
     const durationMs = Date.now() - startTime;
-    const body = request.body;
+    const body = request.body as { teaType?: string } | undefined;
     const isCoffee = request.path.includes('coffee');
 
     const logData = {
@@ -65,7 +65,7 @@ export class LoggingInterceptor implements NestInterceptor {
       timestamp: new Date().toISOString(),
       method: request.method,
       path: request.path,
-      teaRequested: body?.teaType || 'unknown',
+      teaRequested: body?.teaType ?? 'unknown',
       outcome,
       durationMs,
       clientIp: request.ip,

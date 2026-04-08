@@ -1,10 +1,6 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import {
-  HealthCheckService,
-  HealthCheck,
-  HealthIndicatorResult,
-} from '@nestjs/terminus';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common';
+import { HealthCheckService, HealthCheck } from '@nestjs/terminus';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { KettleHealthIndicator } from './indicators/kettle.health';
 import { WaterLevelHealthIndicator } from './indicators/water-level.health';
 import { TeaBagHealthIndicator } from './indicators/tea-bag.health';
