@@ -12,6 +12,7 @@ import { MenuModule } from './menu/menu.module';
 import { TelemetryModule } from './telemetry/telemetry.module';
 
 import { TeapotExceptionFilter } from './common/filters/teapot-exception.filter';
+import { NotFoundExceptionFilter } from './common/filters/not-found-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
 
@@ -30,6 +31,7 @@ import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
           : join(process.cwd(), 'src', 'public'),
       serveRoot: '/',
       exclude: ['/api/*', '/docs/*', '/metrics/*', '/health/*'],
+      renderPath: '/something-that-forces-fallback-to-fail', // Hack to prevent serve-static from hijacking 404s and serving index.html
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
@@ -55,6 +57,10 @@ import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
     {
       provide: APP_FILTER,
       useClass: TeapotExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: NotFoundExceptionFilter,
     },
     {
       provide: APP_INTERCEPTOR,
