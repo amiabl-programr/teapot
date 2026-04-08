@@ -1,7 +1,7 @@
-# 🫖 Teapot Microservice
+# 🫖 Teapot Service
 
 ## Overview
-Welcome to the Teapot Microservice. This highly scalable, flawlessly engineered NestJS application is responsible for managing the teapot infrastructure of our enterprise architecture.
+Welcome to the Teapot Service. This highly scalable, flawlessly engineered NestJS application is responsible for managing the teapot infrastructure of our enterprise architecture.
 
 By design, this service strictly adheres to RFC 2324 (Hyper Text Coffee Pot Control Protocol). Therefore, all requests to brew tea or coffee will result in `HTTP 418 I'm a Teapot`.
 
