@@ -39,7 +39,7 @@ export class MetricsService {
 
     this.coffeeRequestsTotal = new Counter({
       name: 'teapot_coffee_requests_total',
-      help: 'Total number of heresy (coffee) requests',
+      help: 'Total number of coffee requests received and subjected to immediate rejection (heresy)',
       registers: [this.registry],
     });
 

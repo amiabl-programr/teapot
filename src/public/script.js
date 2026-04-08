@@ -1,3 +1,4 @@
+// RFC 2324 compliant: all coffee requests result in immediate rejection.
 let selectedTea = 'Earl Grey';
 let attempts = 0;
 let startTime = Date.now();
