@@ -34,18 +34,25 @@ jobs:
 
     - name: Strict Coffee Rejection Check
       run: |
+        # Check commit message: coffee without rejection is forbidden
         if git log -1 --pretty=%B | grep -iq "coffee"; then
           if ! git log -1 --pretty=%B | grep -iq "rejection"; then
             echo "🔥 CASCADING FAILURE SIMULATION TRIGGERED 🔥"
-            echo "A commit was detected containing the word 'coffee' without the word 'rejection'!"
+            echo "Commit message contains 'coffee' without 'rejection'!"
             echo "As a strict teapot, this is unacceptable."
             exit 1
           fi
         fi
-        
-        if grep -ri "coffee" src/ | grep -vqi "rejection"; then
-          echo "🔥 CASCADING FAILURE SIMULATION TRIGGERED 🔥"
-          echo "Found the word 'coffee' in the codebase without 'rejection'!"
-          echo "As a strict teapot, this is unacceptable."
-          exit 1
-        fi
+
+        # Check source files: any file that mentions coffee must also mention rejection
+        # (file-level, not line-level — coffeeRequestsTotal etc. are legitimate rejection code)
+        while IFS= read -r file; do
+          if ! grep -qi "rejection" "$file"; then
+            echo "🔥 CASCADING FAILURE SIMULATION TRIGGERED 🔥"
+            echo "File '$file' mentions 'coffee' with no mention of 'rejection'!"
+            echo "As a strict teapot, this is unacceptable."
+            exit 1
+          fi
+        done < <(grep -rli "coffee" src/)
+
+        echo "✅ Coffee rejection compliance confirmed. The kettle stands firm."
