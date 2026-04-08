@@ -31,3 +31,21 @@ jobs:
 
     - name: Build project
       run: npm run build
+
+    - name: Strict Coffee Rejection Check
+      run: |
+        if git log -1 --pretty=%B | grep -iq "coffee"; then
+          if ! git log -1 --pretty=%B | grep -iq "rejection"; then
+            echo "🔥 CASCADING FAILURE SIMULATION TRIGGERED 🔥"
+            echo "A commit was detected containing the word 'coffee' without the word 'rejection'!"
+            echo "As a strict teapot, this is unacceptable."
+            exit 1
+          fi
+        fi
+        
+        if grep -ri "coffee" src/ | grep -vqi "rejection"; then
+          echo "🔥 CASCADING FAILURE SIMULATION TRIGGERED 🔥"
+          echo "Found the word 'coffee' in the codebase without 'rejection'!"
+          echo "As a strict teapot, this is unacceptable."
+          exit 1
+        fi
