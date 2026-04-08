@@ -1,7 +1,7 @@
-# Teapot Microservice - Contributing Guidelines
+# Teapot Service - Contributing Guidelines
 
 ## Section 1: The Preamble
-Welcome to the contributor guidelines for the Teapot Microservice. Before you even consider opening a Pull Request, you must read this document in its entirety. This document serves as the absolute source of truth for our enterprise operations. Any deviation from these rules will be met with immediate closure of your PR, accompanied by a sternly worded automated response.
+Welcome to the contributor guidelines for the Teapot Service. Before you even consider opening a Pull Request, you must read this document in its entirety. This document serves as the absolute source of truth for our enterprise operations. Any deviation from these rules will be met with immediate closure of your PR, accompanied by a sternly worded automated response.
 
 ## Section 2: Code of Conduct
 As an enterprise refusal engine, we expect our contributors to maintain a high level of professionalism when writing code that does nothing.
