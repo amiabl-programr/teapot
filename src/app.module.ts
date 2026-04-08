@@ -1,7 +1,9 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import configuration from './config/configuration';
 
 import { BrewModule } from './brew/brew.module';
@@ -19,6 +21,11 @@ import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'src', 'public'),
+      serveRoot: '/',
+      exclude: ['/api/*', '/docs/*', '/metrics/*', '/health/*'],
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeaPot™ Enterprise Brewing Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="badge">Enterprise Edition v4.18.0</div>
+    <h1>TeaPot™ Brewing<br>Platform</h1>
+    <p class="subtitle">Powered by HTCPCP/1.0 · RFC 2324 Compliant · Always Refusing</p>
+  </header>
+
+  <!-- Teapot illustration -->
+  <div class="teapot-wrap">
+    <div class="steam-container">
+      <div class="steam"></div>
+      <div class="steam"></div>
+      <div class="steam"></div>
+    </div>
+    <svg class="teapot-svg" id="teapot" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Body -->
+      <ellipse cx="82" cy="100" rx="52" ry="42" fill="#C8821A" />
+      <ellipse cx="82" cy="100" rx="44" ry="34" fill="#D4A04A" />
+      <!-- Lid -->
+      <rect x="58" y="58" width="48" height="10" rx="5" fill="#7A4E10" />
+      <rect x="68" y="50" width="28" height="12" rx="6" fill="#9A6620" />
+      <ellipse cx="82" cy="50" rx="7" ry="5" fill="#C8821A" />
+      <!-- Spout -->
+      <path d="M30 85 Q12 70 18 58 Q24 48 34 55 Q30 68 36 80 Z" fill="#B87218" />
+      <!-- Handle -->
+      <path d="M130 82 Q155 82 155 100 Q155 118 130 118" stroke="#7A4E10" stroke-width="9" fill="none" stroke-linecap="round" />
+      <!-- Shine -->
+      <ellipse cx="68" cy="88" rx="10" ry="6" fill="rgba(255,255,255,0.2)" transform="rotate(-20 68 88)" />
+      <!-- Base shadow -->
+      <ellipse cx="82" cy="142" rx="38" ry="6" fill="rgba(200,130,26,0.15)" />
+    </svg>
+  </div>
+
+  <!-- Brew form -->
+  <div class="card">
+    <p class="card-label">Select your tea</p>
+    <div class="tea-grid" id="teaGrid">
+      <button class="tea-btn active" data-tea="Earl Grey" onclick="selectTea(this)"><span class="tea-icon">🍵</span>Earl Grey</button>
+      <button class="tea-btn" data-tea="Chamomile" onclick="selectTea(this)"><span class="tea-icon">🌼</span>Chamomile</button>
+      <button class="tea-btn" data-tea="Oolong" onclick="selectTea(this)"><span class="tea-icon">🍃</span>Oolong</button>
+      <button class="tea-btn" data-tea="Darjeeling" onclick="selectTea(this)"><span class="tea-icon">🌿</span>Darjeeling</button>
+      <button class="tea-btn" data-tea="Matcha" onclick="selectTea(this)"><span class="tea-icon">🍵</span>Matcha</button>
+      <button class="tea-btn" data-tea="Rooibos" onclick="selectTea(this)"><span class="tea-icon">🌺</span>Rooibos</button>
+    </div>
+
+    <div class="useless-fields">
+      <div class="field">
+        <label>Temperature <span>does nothing</span></label>
+        <input type="range" min="60" max="100" value="85" id="tempSlider" />
+      </div>
+      <div class="field">
+        <label>Sugar level <span>does nothing</span></label>
+        <input type="range" min="0" max="10" value="3" id="sugarSlider" />
+      </div>
+    </div>
+
+    <div class="milk-toggle">
+      <label class="toggle-switch">
+        <input type="checkbox" id="milkToggle" />
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="toggle-label">Milk &nbsp;<span style="color:var(--amber);font-size:10px;font-style:italic;">also does nothing</span></span>
+    </div>
+
+    <button class="brew-btn" id="brewBtn" onclick="attemptBrew()">☕ BREW</button>
+
+    <!-- Progress steps -->
+    <div class="progress-steps" id="progressSteps">
+      <div class="step" id="step1"><div class="step-icon">⟳</div>Validating tea request...</div>
+      <div class="step" id="step2"><div class="step-icon">⟳</div>Checking kettle temperature... (18°C)</div>
+      <div class="step" id="step3"><div class="step-icon">⟳</div>Checking water level... (0%)</div>
+      <div class="step" id="step4"><div class="step-icon">⟳</div>Consulting the Geneva Convention...</div>
+      <div class="step" id="step5"><div class="step-icon">⟳</div>Attempting brew...</div>
+    </div>
+  </div>
+
+  <!-- Response -->
+  <div class="response-card card" id="responseCard">
+    <div class="status-418" id="statusCode">418</div>
+    <p class="status-label">I'm a Teapot · Request Refused · RFC 2324</p>
+    <div class="json-block" id="jsonBlock"></div>
+    <button class="try-again-btn" onclick="resetForm()">↩ try again (it won't help)</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-num" id="totalAttempts">0</span>
+      <span class="stat-label">Brew attempts</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num" style="color:var(--fail)">0</span>
+      <span class="stat-label">Successful brews</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="uptime">0s</span>
+      <span class="stat-label">Uptime</span>
+    </div>
+  </div>
+
+  <p class="coffee-hint" onclick="tryBrew418Coffee()">psst... try ordering coffee</p>
+
+</div>
+
+<!-- Coffee explosion -->
+<div class="explosion" id="explosion">
+  <div class="explosion-text">ABSOLUTELY NOT.</div>
+  <p class="explosion-sub">HTTP 418 · I am a teapot.<br>I refuse to brew coffee with extreme prejudice.</p>
+  <button class="explosion-close" onclick="closeExplosion()">I understand. I'm sorry.</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
