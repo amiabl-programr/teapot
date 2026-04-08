@@ -23,7 +23,12 @@ import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'src', 'public'),
+      // Dev (ts-node): serve directly from src/public
+      // Prod (Docker):  public/ is copied alongside dist/ by the Dockerfile
+      rootPath:
+        process.env.NODE_ENV === 'production'
+          ? join(__dirname, '..', 'public')
+          : join(process.cwd(), 'src', 'public'),
       serveRoot: '/',
       exclude: ['/api/*', '/docs/*', '/metrics/*', '/health/*'],
     }),
