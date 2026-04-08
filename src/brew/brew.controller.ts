@@ -88,7 +88,10 @@ export class BrewController {
   public brewCoffee(): never {
     this.metricsService.coffeeRequestsTotal.inc();
     throw new HttpException(
-      { message: 'Absolutely not. Coffee request denied. This is a teapot — rejection is our only protocol.' },
+      {
+        message:
+          'Absolutely not. Coffee request denied. This is a teapot — rejection is our only protocol.',
+      },
       HttpStatus.I_AM_A_TEAPOT,
     );
   }

@@ -3,17 +3,23 @@ import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { type App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { MetricsModule } from './../src/metrics/metrics.module';
 
 describe('Teapot Microservice (e2e)', () => {
   let app: INestApplication;
   let server: App;
 
+  let metricsApp: INestApplication;
+  let metricsServer: App;
+
   beforeAll(async () => {
+    // 1) Public App
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api');
     app.useGlobalPipes(
       new ValidationPipe({
         transform: true,
@@ -23,22 +29,32 @@ describe('Teapot Microservice (e2e)', () => {
     );
     await app.init();
     server = app.getHttpServer() as App;
+
+    // 2) Internal Metrics App
+    const metricsModuleFixture: TestingModule = await Test.createTestingModule({
+      imports: [MetricsModule],
+    }).compile();
+
+    metricsApp = metricsModuleFixture.createNestApplication();
+    await metricsApp.init();
+    metricsServer = metricsApp.getHttpServer() as App;
   });
 
   afterAll(async () => {
     await app.close();
+    await metricsApp.close();
   });
 
-  it('POST /v1/brew without key should return 401 Unauthorized', () => {
+  it('POST /api/v1/brew without key should return 401 Unauthorized', () => {
     return request(server)
-      .post('/v1/brew')
+      .post('/api/v1/brew')
       .send({ teaType: 'Earl Grey' })
       .expect(HttpStatus.UNAUTHORIZED);
   });
 
-  it('POST /v1/brew full request lifecycle returns 418', () => {
+  it('POST /api/v1/brew full request lifecycle returns 418', () => {
     return request(server)
-      .post('/v1/brew')
+      .post('/api/v1/brew')
       .set('X-Teapot-Key', 'teamaster')
       .send({ teaType: 'Earl Grey' })
       .expect(HttpStatus.I_AM_A_TEAPOT)
@@ -54,37 +70,42 @@ describe('Teapot Microservice (e2e)', () => {
       });
   });
 
-  it('GET /health/live returns tragically alive', () => {
+  it('GET /api/health/live returns tragically alive', () => {
     return request(server)
-      .get('/health/live')
+      .get('/api/health/live')
       .expect(HttpStatus.OK)
       .expect({ status: 'alive', note: 'tragically' });
   });
 
-  it('GET /metrics returns prometheus data', async () => {
-    const res = await request(server).get('/metrics').expect(HttpStatus.OK);
+  it('GET /metrics returns 404 on public app, but prometheus data on internal metrics app', async () => {
+    // Public App should NOT have /metrics
+    await request(server).get('/metrics').expect(HttpStatus.NOT_FOUND);
 
+    // Internal Metrics App SHOULD have /metrics
+    const res = await request(metricsServer)
+      .get('/metrics')
+      .expect(HttpStatus.OK);
     expect(res.text).toContain('teapot_temperature_celsius 18');
   });
 
-  it('POST /v1/brew triggers rate limit after 3 requests', async () => {
+  it('POST /api/v1/brew triggers rate limit after 3 requests', async () => {
     // Already did 1 above, let's do 3 more to ensure hitting the 3/min limit
     for (let i = 0; i < 3; i++) {
       await request(server)
-        .post('/v1/brew')
+        .post('/api/v1/brew')
         .set('X-Teapot-Key', 'admin')
         .send({ teaType: 'Matcha' });
     }
 
     // The 4th/5th overall should be 429 Too Many Requests
     return request(server)
-      .post('/v1/brew')
+      .post('/api/v1/brew')
       .set('X-Teapot-Key', 'admin')
       .send({ teaType: 'Matcha' })
       .expect(HttpStatus.TOO_MANY_REQUESTS)
       .expect((res) => {
         const body = res.body as { message: string };
-        expect(body.message).toContain('The kettle needs time to cool down.');
+        expect(body.message).toContain('ThrottlerException: Too Many Requests');
       });
   });
 });
