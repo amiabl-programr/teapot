@@ -38,6 +38,11 @@ async function attemptBrew() {
   responseCard.classList.remove('visible');
   progressSteps.classList.add('visible');
 
+  // Auto-scroll to progress steps
+  setTimeout(() => {
+    progressSteps.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
+
   // Start the actual fetch call in the background
   let apiResponse = null;
   let responseData = null;
@@ -136,6 +141,11 @@ function showResponse(data, status) {
 
   responseCard.classList.add('visible');
   document.getElementById('brewBtn').textContent = '☕ BREW';
+
+  // Auto-scroll to show the final response
+  setTimeout(() => {
+    responseCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
 }
 
 function resetForm() {
