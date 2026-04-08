@@ -30,7 +30,9 @@ describe('BrewService', () => {
       service.brew({ teaType: 'Oolong' });
     }).toThrow(TeapotException);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(metricsService.brewAttemptsTotal.inc).toHaveBeenCalled();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(metricsService.brewRefusalsTotal.inc).toHaveBeenCalled();
   });
 });

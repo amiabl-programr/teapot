@@ -8,17 +8,21 @@ setInterval(() => {
   const secs = Math.floor((Date.now() - startTime) / 1000);
   const el = document.getElementById('uptime');
   if (secs < 60) el.textContent = secs + 's';
-  else if (secs < 3600) el.textContent = Math.floor(secs/60) + 'm';
-  else el.textContent = Math.floor(secs/3600) + 'h';
+  else if (secs < 3600) el.textContent = Math.floor(secs / 60) + 'm';
+  else el.textContent = Math.floor(secs / 3600) + 'h';
 }, 1000);
 
 function selectTea(btn) {
-  document.querySelectorAll('.tea-btn').forEach(b => b.classList.remove('active'));
+  document
+    .querySelectorAll('.tea-btn')
+    .forEach((b) => b.classList.remove('active'));
   btn.classList.add('active');
   selectedTea = btn.dataset.tea;
 }
 
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+function delay(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
 
 async function attemptBrew() {
   if (brewing) return;
@@ -34,11 +38,23 @@ async function attemptBrew() {
   progressSteps.classList.add('visible');
 
   const steps = [
-    { id: 'step1', result: 'success', label: 'Tea request validated successfully' },
-    { id: 'step2', result: 'success', label: 'Kettle temperature: 18°C (way too cold)' },
-    { id: 'step3', result: 'success', label: 'Water level: 0% (critically empty)' },
+    {
+      id: 'step1',
+      result: 'success',
+      label: 'Tea request validated successfully',
+    },
+    {
+      id: 'step2',
+      result: 'success',
+      label: 'Kettle temperature: 18°C (way too cold)',
+    },
+    {
+      id: 'step3',
+      result: 'success',
+      label: 'Water level: 0% (critically empty)',
+    },
     { id: 'step4', result: 'success', label: 'Geneva Convention consulted' },
-    { id: 'step5', result: 'fail',    label: 'Brew failed: I am a teapot' },
+    { id: 'step5', result: 'fail', label: 'Brew failed: I am a teapot' },
   ];
 
   for (let i = 0; i < steps.length; i++) {
@@ -55,7 +71,10 @@ async function attemptBrew() {
       el.classList.add('fail');
       el.querySelector('.step-icon').textContent = '✗';
       document.getElementById('teapot').classList.add('shaking');
-      setTimeout(() => document.getElementById('teapot').classList.remove('shaking'), 700);
+      setTimeout(
+        () => document.getElementById('teapot').classList.remove('shaking'),
+        700,
+      );
     }
     el.querySelector('.step-icon').nextSibling.textContent = ' ' + s.label;
     await delay(180);
@@ -91,7 +110,7 @@ function showResponse() {
 function resetForm() {
   document.getElementById('progressSteps').classList.remove('visible');
   document.getElementById('responseCard').classList.remove('visible');
-  document.querySelectorAll('.step').forEach(s => {
+  document.querySelectorAll('.step').forEach((s) => {
     s.classList.remove('visible', 'running', 'success', 'fail');
   });
   document.getElementById('brewBtn').disabled = false;
@@ -107,8 +126,8 @@ function launchConfetti() {
       el.style.left = Math.random() * 100 + 'vw';
       el.style.bottom = '0';
       el.style.background = colors[Math.floor(Math.random() * colors.length)];
-      el.style.animationDuration = (1.2 + Math.random() * 1.2) + 's';
-      el.style.animationDelay = (Math.random() * 0.5) + 's';
+      el.style.animationDuration = 1.2 + Math.random() * 1.2 + 's';
+      el.style.animationDelay = Math.random() * 0.5 + 's';
       el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
       document.body.appendChild(el);
       setTimeout(() => el.remove(), 2500);
