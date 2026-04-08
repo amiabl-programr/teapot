@@ -73,7 +73,7 @@ export class LoggingInterceptor implements NestInterceptor {
     };
 
     if (isCoffee) {
-      logger.warn('Coffee request detected and neutralized', logData);
+      logger.warn('Coffee request detected — issuing immediate rejection', logData);
     } else {
       logger.info('Refused to brew tea', logData);
     }
