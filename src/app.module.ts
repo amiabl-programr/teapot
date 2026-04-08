@@ -25,7 +25,7 @@ import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => [
         {
-          ttl: config.get<number>('rateLimit.ttl') || 60,
+          ttl: config.get<number>('rateLimit.ttl') || 60000,
           limit: config.get<number>('rateLimit.limit') || 3,
           errorMessage: 'The kettle needs time to cool down.',
         },
