@@ -38,6 +38,24 @@ async function attemptBrew() {
   responseCard.classList.remove('visible');
   progressSteps.classList.add('visible');
 
+  // Start the actual fetch call in the background
+  let apiResponse = null;
+  let responseData = null;
+  try {
+    apiResponse = await fetch('/api/v1/brew', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Teapot-Key': 'teamaster',
+      },
+      body: JSON.stringify({ teaType: selectedTea }),
+    });
+    responseData = await apiResponse.json();
+  } catch (error) {
+    console.error('Fetch error:', error);
+    responseData = { message: 'Failed to contact the enterprise teapot', status: 'error' };
+  }
+
   const steps = [
     {
       id: 'step1',
@@ -55,7 +73,7 @@ async function attemptBrew() {
       label: 'Water level: 0% (critically empty)',
     },
     { id: 'step4', result: 'success', label: 'Geneva Convention consulted' },
-    { id: 'step5', result: 'fail', label: 'Brew failed: I am a teapot' },
+    { id: 'step5', result: 'fail', label: apiResponse?.status === 429 ? 'Brew failed: The kettle needs time to cool down.' : 'Brew failed: I am a teapot' },
   ];
 
   for (let i = 0; i < steps.length; i++) {
@@ -82,27 +100,39 @@ async function attemptBrew() {
   }
 
   await delay(400);
-  showResponse();
-  launchConfetti();
+  showResponse(responseData, apiResponse?.status || 500);
+  if (apiResponse?.status === 418) launchConfetti();
 
   attempts++;
   document.getElementById('totalAttempts').textContent = attempts;
   brewing = false;
 }
 
-function showResponse() {
+function showResponse(data, status) {
   const responseCard = document.getElementById('responseCard');
   const jsonBlock = document.getElementById('jsonBlock');
 
-  const ts = new Date().toISOString();
-  jsonBlock.innerHTML = `<span class="json-ts">{</span>
-  <span class="json-key">"status"</span>: <span class="json-str">"refused"</span>,
-  <span class="json-key">"message"</span>: <span class="json-str">"I am a teapot. I cannot brew coffee or anything else."</span>,
-  <span class="json-key">"teaRequested"</span>: <span class="json-str">"${selectedTea}"</span>,
-  <span class="json-key">"brewed"</span>: <span class="json-bool">false</span>,
-  <span class="json-key">"timestamp"</span>: <span class="json-str">"${ts}"</span>,
-  <span class="json-key">"httpStatus"</span>: <span class="json-bool">418</span>
-<span class="json-ts">}</span>`;
+  // Pretty print the actual API response
+  const stringified = JSON.stringify(data, null, 2);
+  let highlighted = stringified
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  
+  // Simple syntax highlighting regex
+  highlighted = highlighted.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+    let cls = 'json-str';
+    if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+            cls = 'json-key';
+        }
+    } else if (/true|false/.test(match)) {
+        cls = 'json-bool';
+    }
+    return '<span class="' + cls + '">' + match + '</span>';
+  });
+
+  jsonBlock.innerHTML = `<span class="json-ts">HTTP ${status}</span>\n` + highlighted;
 
   responseCard.classList.add('visible');
   document.getElementById('brewBtn').textContent = '☕ BREW';
@@ -136,7 +166,13 @@ function launchConfetti() {
   }
 }
 
-function tryBrew418Coffee() {
+async function tryBrew418Coffee() {
+  try {
+    // Actually hit the backend to enforce the rejection metric
+    await fetch('/api/v1/brew/coffee', { method: 'POST', headers: { 'X-Teapot-Key': 'teamaster' } });
+  } catch (e) {
+    console.error(e);
+  }
   document.getElementById('explosion').classList.add('visible');
   attempts++;
   document.getElementById('totalAttempts').textContent = attempts;
