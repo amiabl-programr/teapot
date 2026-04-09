@@ -3,14 +3,10 @@ import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { type App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { MetricsModule } from './../src/metrics/metrics.module';
 
-describe('Teapot Microservice (e2e)', () => {
+describe('Teapot Service (e2e)', () => {
   let app: INestApplication;
   let server: App;
-
-  let metricsApp: INestApplication;
-  let metricsServer: App;
 
   beforeAll(async () => {
     // 1) Public App
@@ -29,20 +25,10 @@ describe('Teapot Microservice (e2e)', () => {
     );
     await app.init();
     server = app.getHttpServer() as App;
-
-    // 2) Internal Metrics App
-    const metricsModuleFixture: TestingModule = await Test.createTestingModule({
-      imports: [MetricsModule],
-    }).compile();
-
-    metricsApp = metricsModuleFixture.createNestApplication();
-    await metricsApp.init();
-    metricsServer = metricsApp.getHttpServer() as App;
   });
 
   afterAll(async () => {
     await app.close();
-    await metricsApp.close();
   });
 
   it('POST /api/v1/brew without key should return 401 Unauthorized', () => {
@@ -77,15 +63,8 @@ describe('Teapot Microservice (e2e)', () => {
       .expect({ status: 'alive', note: 'tragically' });
   });
 
-  it('GET /metrics returns 404 on public app, but prometheus data on internal metrics app', async () => {
-    // Public App should NOT have /metrics
+  it('GET /metrics returns 404 on public app', async () => {
     await request(server).get('/metrics').expect(HttpStatus.NOT_FOUND);
-
-    // Internal Metrics App SHOULD have /metrics
-    const res = await request(metricsServer)
-      .get('/metrics')
-      .expect(HttpStatus.OK);
-    expect(res.text).toContain('teapot_temperature_celsius 18');
   });
 
   it('POST /api/v1/brew triggers rate limit after 3 requests', async () => {

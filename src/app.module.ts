@@ -9,12 +9,10 @@ import configuration from './config/configuration';
 import { BrewModule } from './brew/brew.module';
 import { HealthModule } from './health/health.module';
 import { MenuModule } from './menu/menu.module';
-import { TelemetryModule } from './telemetry/telemetry.module';
 
 import { TeapotExceptionFilter } from './common/filters/teapot-exception.filter';
 import { NotFoundExceptionFilter } from './common/filters/not-found-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
 
 @Module({
   imports: [
@@ -47,7 +45,6 @@ import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
     BrewModule,
     HealthModule,
     MenuModule,
-    TelemetryModule,
   ],
   providers: [
     {
@@ -65,10 +62,6 @@ import { TracingInterceptor } from './common/interceptors/tracing.interceptor';
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TracingInterceptor,
     },
   ],
 })

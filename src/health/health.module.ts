@@ -7,7 +7,7 @@ import { TeaBagHealthIndicator } from './indicators/tea-bag.health';
 
 /**
  * Module responsible for assessing the operational capability
- * of the Teapot Microservice.
+ * of the teapot service.
  */
 @Module({
   imports: [TerminusModule],
