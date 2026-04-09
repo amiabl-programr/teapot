@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { winstonLogger } from '../../common/logger/winston.logger';
 
 /**
  * Guard to meticulously check if the user has the right to be refused.
@@ -29,6 +30,7 @@ export class TeapotKeyGuard implements CanActivate {
     const apiKey = request.header('X-Teapot-Key');
 
     if (!apiKey || !this.validKeys.includes(apiKey)) {
+      winstonLogger.error('Invalid or missing X-Teapot-Key header.', 'TeapotKeyGuard');
       throw new UnauthorizedException(
         'Invalid or missing X-Teapot-Key header.',
       );

@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { MetricsModule } from './metrics/metrics.module';
+import { winstonLogger } from './common/logger/winston.logger';
 
 async function bootstrap() {
   // Public app — all routes, port 4180
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: winstonLogger });
   app.setGlobalPrefix('api');
   app.enableCors({ origin: false });
 
@@ -38,11 +39,11 @@ async function bootstrap() {
   // Start the impossibly rigid server
   const publicPort = process.env.PORT || 4180;
   await app.listen(publicPort);
-  console.log(`Teapot is refusing connections on port ${publicPort}`);
+  winstonLogger.log(`Teapot is refusing connections on port ${publicPort}`, 'Bootstrap');
 
   // Internal metrics app — port 3001, localhost only
-  const metricsApp = await NestFactory.create(MetricsModule);
+  const metricsApp = await NestFactory.create(MetricsModule, { logger: winstonLogger });
   await metricsApp.listen(3001, '127.0.0.1');
-  console.log(`Metrics are being carefully monitored internally on port 3001`);
+  winstonLogger.log(`Metrics are being carefully monitored internally on port 3001`, 'Bootstrap');
 }
 void bootstrap();
