@@ -13,7 +13,6 @@ import { BrewService } from './brew.service';
 import { BrewRequestDto } from './dto/brew-request.dto';
 import { BrewResponseDto } from './dto/brew-response.dto';
 import { TeapotKeyGuard } from '../auth/guards/teapot-key.guard';
-import { MetricsService } from '../metrics/metrics.service';
 import { winstonLogger } from '../common/logger/winston.logger';
 
 /**
@@ -36,12 +35,8 @@ export class BrewController {
    * Instantiates the BrewController.
    *
    * @param {BrewService} brewService The core refusal logic service
-   * @param {MetricsService} metricsService The metrics tracking service
    */
-  constructor(
-    private readonly brewService: BrewService,
-    private readonly metricsService: MetricsService,
-  ) {}
+  constructor(private readonly brewService: BrewService) {}
 
   /**
    * Attempt to brew tea (will always fail).
@@ -88,7 +83,6 @@ export class BrewController {
   @ApiOperation({ summary: 'Request coffee (strongly discouraged)' })
   @ApiResponse({ status: 418, description: 'Absolutely not' })
   public brewCoffee(): void {
-    this.metricsService.coffeeRequestsTotal.inc();
     throw new HttpException(
       {
         message:

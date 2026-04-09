@@ -14,8 +14,4 @@ export default () => ({
     temperatureCelsius: 18.0,
     inventory: 0,
   },
-  telemetry: {
-    serviceName: 'teapot-microservice',
-    otlpEndpoint: process.env.OTLP_ENDPOINT || 'http://localhost:4318',
-  },
 });
