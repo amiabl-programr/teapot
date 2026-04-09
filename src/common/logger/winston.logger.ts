@@ -1,4 +1,7 @@
-import { WinstonModule, utilities as nestWinstonModuleUtilities } from 'nest-winston';
+import {
+  WinstonModule,
+  utilities as nestWinstonModuleUtilities,
+} from 'nest-winston';
 import * as winston from 'winston';
 
 export const winstonLogger = WinstonModule.createLogger({
@@ -14,6 +17,9 @@ export const winstonLogger = WinstonModule.createLogger({
         }),
       ),
     }),
-    new winston.transports.File({ filename: 'teapot-system.log', format: winston.format.json() }),
+    new winston.transports.File({
+      filename: 'teapot-system.log',
+      format: winston.format.json(),
+    }),
   ],
 });

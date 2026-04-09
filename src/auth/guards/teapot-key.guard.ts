@@ -30,7 +30,10 @@ export class TeapotKeyGuard implements CanActivate {
     const apiKey = request.header('X-Teapot-Key');
 
     if (!apiKey || !this.validKeys.includes(apiKey)) {
-      winstonLogger.error('Invalid or missing X-Teapot-Key header.', 'TeapotKeyGuard');
+      winstonLogger.error(
+        'Invalid or missing X-Teapot-Key header.',
+        'TeapotKeyGuard',
+      );
       throw new UnauthorizedException(
         'Invalid or missing X-Teapot-Key header.',
       );

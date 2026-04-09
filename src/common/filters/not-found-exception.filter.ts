@@ -1,4 +1,9 @@
-import { ExceptionFilter, Catch, ArgumentsHost, NotFoundException } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  NotFoundException,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { join } from 'path';
 
@@ -18,7 +23,10 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
 
     // If it's an API route or expects JSON, return a standard strict JSON 404
-    if (request.url.startsWith('/api') || request.headers.accept?.includes('application/json')) {
+    if (
+      request.url.startsWith('/api') ||
+      request.headers.accept?.includes('application/json')
+    ) {
       response.status(status).json({
         statusCode: status,
         error: 'Not Found',
