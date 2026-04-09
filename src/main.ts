@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { MetricsModule } from './metrics/metrics.module';
@@ -39,11 +39,19 @@ async function bootstrap() {
   // Start the impossibly rigid server
   const publicPort = process.env.PORT || 4180;
   await app.listen(publicPort);
-  winstonLogger.log(`Teapot is refusing connections on port ${publicPort}`, 'Bootstrap');
+  winstonLogger.log(
+    `Teapot is refusing connections on port ${publicPort}`,
+    'Bootstrap',
+  );
 
   // Internal metrics app — port 3001, localhost only
-  const metricsApp = await NestFactory.create(MetricsModule, { logger: winstonLogger });
+  const metricsApp = await NestFactory.create(MetricsModule, {
+    logger: winstonLogger,
+  });
   await metricsApp.listen(3001, '127.0.0.1');
-  winstonLogger.log(`Metrics are being carefully monitored internally on port 3001`, 'Bootstrap');
+  winstonLogger.log(
+    `Metrics are being carefully monitored internally on port 3001`,
+    'Bootstrap',
+  );
 }
 void bootstrap();

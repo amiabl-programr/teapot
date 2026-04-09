@@ -19,9 +19,9 @@ export class TracingInterceptor implements NestInterceptor {
    *
    * @param {ExecutionContext} ctx The context
    * @param {CallHandler} next The logic
-   * @returns {Observable<any>} The result
+   * @returns {Observable<unknown>} The result
    */
-  intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(ctx: ExecutionContext, next: CallHandler): Observable<unknown> {
     const tracer = trace.getTracer('teapot-tracer');
 
     const requestSpan = tracer.startSpan('http.server.request');

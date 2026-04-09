@@ -28,7 +28,7 @@ export class LoggingInterceptor implements NestInterceptor {
    *
    * @param {ExecutionContext} context The execution context
    * @param {CallHandler} next The next call handler
-   * @returns {Observable<any>} The response stream
+   * @returns {Observable<unknown>} The response stream
    */
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<Request>();

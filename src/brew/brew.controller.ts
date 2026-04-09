@@ -14,6 +14,7 @@ import { BrewRequestDto } from './dto/brew-request.dto';
 import { BrewResponseDto } from './dto/brew-response.dto';
 import { TeapotKeyGuard } from '../auth/guards/teapot-key.guard';
 import { MetricsService } from '../metrics/metrics.service';
+import { winstonLogger } from '../common/logger/winston.logger';
 
 /**
  * Controller handling the brewing endpoints.
@@ -56,20 +57,21 @@ export class BrewController {
     description: 'The only possible outcome',
     type: BrewResponseDto,
   })
-  public brewTea(@Body() brewRequest: BrewRequestDto): BrewResponseDto {
-    return this.brewService.brew(brewRequest);
+  public brewTea(@Body() brewRequest: BrewRequestDto): void {
+    winstonLogger.log('Received a request to brew tea', 'BrewController');
+    this.brewService.brew(brewRequest);
   }
 
   /**
    * Sunset V2 brew endpoint.
    *
-   * @returns {never}
+   * @returns {void}
    */
   @Get('v2/brew')
   @HttpCode(HttpStatus.GONE)
   @ApiOperation({ summary: 'Attempt to brew tea via V2 (deprecated)' })
   @ApiResponse({ status: 410, description: 'Endpoint is gone' })
-  public brewTeaV2(): never {
+  public brewTeaV2(): void {
     throw new HttpException(
       'This version was sunset in Q3. Please migrate to v1.',
       HttpStatus.GONE,
@@ -79,13 +81,13 @@ export class BrewController {
   /**
    * Blasphemous endpoint requesting coffee.
    *
-   * @returns {never}
+   * @returns {void}
    */
   @Post('v1/brew/coffee')
   @HttpCode(HttpStatus.I_AM_A_TEAPOT)
   @ApiOperation({ summary: 'Request coffee (strongly discouraged)' })
   @ApiResponse({ status: 418, description: 'Absolutely not' })
-  public brewCoffee(): never {
+  public brewCoffee(): void {
     this.metricsService.coffeeRequestsTotal.inc();
     throw new HttpException(
       {

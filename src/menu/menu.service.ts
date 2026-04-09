@@ -1,5 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
+export interface TeaMenuItem {
+  name: string;
+  description: string;
+  steepTimeMinutes: number;
+  temperatureCelsius: number;
+  mood: string;
+}
+
 /**
  * Service to manage the tea menu. None of these affect brew outcomes.
  */
@@ -8,9 +16,9 @@ export class MenuService {
   /**
    * Retrieves the comprehensive menu.
    *
-   * @returns {any[]} The array of teas.
+   * @returns {TeaMenuItem[]} The array of teas.
    */
-  getMenu(): any[] {
+  getMenu(): TeaMenuItem[] {
     return [
       {
         name: 'Earl Grey',

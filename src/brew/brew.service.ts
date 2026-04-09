@@ -22,10 +22,10 @@ export class BrewService {
    * Always throws a TeapotException. No exceptions to the exception.
    *
    * @param {BrewRequestDto} dto The requested brew details
-   * @returns {never}
+   * @returns {void}
    * @throws {TeapotException} Always.
    */
-  public brew(dto: BrewRequestDto): never {
+  public brew(dto: BrewRequestDto): void {
     // Increment enterprise counters
     this.metricsService.brewAttemptsTotal.inc();
     this.metricsService.brewRefusalsTotal.inc();
